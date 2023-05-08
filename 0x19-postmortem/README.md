@@ -1,16 +1,15 @@
-# Server requests failure report
-Last week, it was reported that the platform was returning 500 Error on all requests made on the platform routes, all the services were down.  90% of the users were affected. The root cause was the failure of our master server web-01.
+ISSUE SUMMARY
 
-## Timeline
-The error was realized on Tuesday 2nd March 19:00 (West Africa Time) when Abdul said he saw the master server lagging in speed. Our engineers on call disconnected the master server web-01 for further system analysis and channelled all requests to client server web-02. They solved the problem by Wednesday 3rd March 22:00 hours (West Africa Time).
+From 7:00 AM to 10:30 AM GMT, urgent requests for Full Throttle RC APIs resulted in 500 and 504 error response messages. My company's mobile applications that rely on the aforementioned APIs also returned similar errors. At its peak, the issue affected 80% of traffic to this API infrastructure. Users could continue to access specific APIs that run on separate infrastructures. The root cause of this outage was a syntax error in the SQL queries and wrong file imports.
 
-## cause and resolution
-The platform is served by 2 ubuntu cloud servers. The master server web-01 was connected to serve all requests, and it stopped functioning due to memory outage as a results of so many requests because during a previous test, the client server web-02 was disconnected temporarily for testing and was not connected to the load balancer afterwards. 
+TIMELINE
 
+11:19 AM: Deployment push begins 11:26 AM: Outage begins 11:26 AM: Pagers alerted teams 11:54 AM: Failed configuration change rollback 12:15 PM: Successful configuration change rollback 12:19 PM: Server restarts begin 12:58 PM: 100% of traffic back online
 
-The issue was fixed when the master server was temporarily disconnected for memory clean-up then connected back to the loadbalancer and round-robin algorithm was configured so that both the master and client servers can handle equal amount of requests.
+ROOT CAUSE
 
-## Prevention against such problem in future
-- Choose the best loadbalancing algorithm for your programs
-- Always keep an eye on your servers to ensure they are running properly
-- Have extra back-up servers to prevent your program fro completely going offline during an issue
+At 11:19 AM PT, a deployment has the newly configured code released into production. The new code pushed has SQL syntax errors, and some files were wrongly imported. Since the errors were not correctly handled in the system, this led to a system-wide breakdown of the entire system. c Resolution and recovery
+
+CORRECTIVE AND PREVENTATIVE MEASURES
+
+The errors were fixed by uploading new code to the server with errors fixed. To avoid getting into a similar situation next time: Test code before uploading Use canary deployment Build CI/CD pipelines
